@@ -8,6 +8,7 @@ class Server {
         this.port = process.env.PORT;
         this.authPath = '/api/auth';
 
+        this.middlewares();
         this.routers();
     }
 
