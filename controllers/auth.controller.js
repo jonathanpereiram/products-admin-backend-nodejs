@@ -1,10 +1,9 @@
 const { request, response } = require('express');
-const bycrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs/dist/bcrypt');
+
+const { generateJWT } = require('../helpers/generate-jwt');
 
 const User = require('../models/user.model');
-const bcrypt = require('bcryptjs/dist/bcrypt');
-const { generateJWT } = require('../helpers/generate-jwt');
 
 const login = async(req = request, res = response) => {
 
@@ -22,8 +21,24 @@ const login = async(req = request, res = response) => {
         });
     }
 
+    const isValidPassword = bcrypt.compareSync(password, user.password);
+
+    if(!isValidPassword){
+        return res.status(400).json({
+            errors: [
+                {
+                    msg: 'invalid credentials'
+                }
+            ]
+        });
+    }
+
+    const token = await generateJWT({id: user.id});
+
+
     res.json({
-        msg: 'response from controller'
+        user,
+        token
     })
 }
 
