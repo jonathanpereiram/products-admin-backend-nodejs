@@ -33,12 +33,14 @@ const login = async(req = request, res = response) => {
         });
     }
 
-    const token = await generateJWT({id: user.id});
+    const token = await generateJWT({uid: user.id});
 
 
     res.json({
-        user,
-        token
+        data: {
+            ...user.toJSON(),
+            token
+        }
     })
 }
 
@@ -70,17 +72,27 @@ const register = async(req = request, res = response) => {
 
     await user.save();
 
-    const token = await generateJWT({id: user.id});
+    const token = await generateJWT({uid: user.id});
 
     res.json({
         data: {
-            user,
+            ...user.toJSON(),
             token
         }
-    })
+    });
+}
+
+const getUser = async(req = request, res = response) => {
+
+    const { uid } = req.user;
+
+    const user = await User.findById(uid);
+
+    res.json({ data: user});
 }
 
 module.exports = {
     login,
-    register
+    register,
+    getUser
 }
