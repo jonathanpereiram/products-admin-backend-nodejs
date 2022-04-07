@@ -17,6 +17,19 @@ const postCategory = async(req = request, res = response) => {
     
     const { name } = req.body;
 
+    const categoryDB = await Category.findOne({name});
+
+    if(categoryDB){
+        return res.json({
+            errors: [
+                {
+                    errorCode: 'xxxx',
+                    description: `Category ${name} already exists`
+                }
+            ]
+        })
+    }
+
     const category = new Category({
         name,
     });
