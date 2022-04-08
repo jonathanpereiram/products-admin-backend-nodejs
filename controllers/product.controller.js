@@ -4,13 +4,11 @@ const Category = require('../models/category.model')
 
 const getProducts = async (req = request, res = response) => {
 
-    let {limit = 10, page = 0, fields = ''} = req.query;
+    let { limit = 10, page = 0, fields = '' } = req.query;
 
     if(fields.length > 0){
         fields = fields.replaceAll(',', ' ');
     }
-
-    console.log(fields)
 
     const [countDocuments, products] = await Promise.all([
         Product.countDocuments(),
@@ -25,9 +23,20 @@ const getProducts = async (req = request, res = response) => {
     })
 }
 
-const getProductById = (req = request, res = response) => {
+const getProductById = async(req = request, res = response) => {
+
+    const { uid } = req.params;
+    
+    const product = await Product.findById(uid);
+
+    if(!product){
+        return res.status(404).end();
+    }
+
     res.json({
-        ok: true
+        data: {
+            ...product.toJSON()
+        }
     })
 }
 

@@ -8,7 +8,11 @@ const router = express.Router();
 
 router.get('/', getProducts);
 
-router.get('/:id', getProductById);
+router.get('/:uid', [
+    check('uid', 'uid is required').notEmpty(),
+    check('uid', 'uid is invalid').isMongoId(),
+    inputValidator
+], getProductById);
 
 router.post('/', [
     check('name', 'The name is required').notEmpty(),
@@ -20,8 +24,8 @@ router.post('/', [
     inputValidator
 ], postProduct);
 
-router.put('/:id', putProduct);
+router.put('/:uid', putProduct);
 
-router.delete('/:id', deleteProduct);
+router.delete('/:uid', deleteProduct);
 
 module.exports = router;
