@@ -1,9 +1,14 @@
 const { request, response } = require("express")
 const Category = require("../models/category.model")
 
-const getCategories = (req = request, res = response) => {
+const getCategories = async(req = request, res = response) => {
+    
+    const categories = await Category.find();
+    
     res.json({
-        ok: true
+        data: {
+            items: categories
+        }
     })
 }
 
@@ -15,7 +20,7 @@ const getCategoryById = (req = request, res = response) => {
 
 const postCategory = async(req = request, res = response) => {
     
-    const { name } = req.body;
+    const { name, active } = req.body;
 
     const categoryDB = await Category.findOne({name});
 
@@ -30,9 +35,7 @@ const postCategory = async(req = request, res = response) => {
         })
     }
 
-    const category = new Category({
-        name,
-    });
+    const category = new Category({ name, active });
 
     await category.save();
     

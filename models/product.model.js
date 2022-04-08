@@ -4,7 +4,8 @@ const { Schema, model } = require('mongoose');
 const productSchema = new Schema({
     name: {
         type: String,
-        required: [true, 'name is required']
+        required: [true, 'name is required'],
+        unique: true
     },
     price: {
         type: Number,
@@ -23,5 +24,11 @@ const productSchema = new Schema({
         ref: 'Categorie'
     }
 });
+
+productSchema.methods.toJSON = function() {
+    const { __v, _id, ...product } = this.toObject();
+    product.uid = _id;
+    return product;
+}
 
 module.exports = model('Product', productSchema);
