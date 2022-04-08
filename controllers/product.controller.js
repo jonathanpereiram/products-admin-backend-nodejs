@@ -17,6 +17,8 @@ const getProducts = async (req = request, res = response) => {
 
     res.json({
         data: {
+            page,
+            limit,
             countDocuments,
             items: products
         }
