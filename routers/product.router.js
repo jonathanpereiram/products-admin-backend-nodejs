@@ -19,12 +19,20 @@ router.post('/', [
     check('price', 'The price is required').notEmpty(),
     check('stock', 'The stock is required').notEmpty(),
     check('category', 'The category is required').notEmpty(),
-    inputValidator,
     check('category', 'The category is invalid').isMongoId(),
     inputValidator
 ], postProduct);
 
-router.put('/:uid', putProduct);
+router.put('/:uid', [
+    check('uid', 'uid is required').notEmpty(),
+    check('uid', 'uid is invalid').isMongoId(),
+    check('name', 'The name is required').notEmpty(),
+    check('price', 'The price is required').notEmpty(),
+    check('stock', 'The stock is required').notEmpty(),
+    check('category', 'The category is required').notEmpty(),
+    check('category', 'The category is invalid').isMongoId(),
+    inputValidator
+], putProduct);
 
 router.delete('/:uid', deleteProduct);
 

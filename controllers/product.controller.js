@@ -49,7 +49,7 @@ const postProduct = async(req = request, res = response) => {
     const productDB = await Product.findOne({ name });
 
     if(productDB){
-        return res.json({
+        return res.status(400).json({
             errors: [
                 {
                     errorCode: 'xxxx',
@@ -62,7 +62,7 @@ const postProduct = async(req = request, res = response) => {
     const categoryDB = await Category.findById(category);
 
     if(!categoryDB){
-        return res.json({
+        return res.status(400).json({
             errors: [
                 {
                     errorCode: 'xxxx',
@@ -89,9 +89,38 @@ const postProduct = async(req = request, res = response) => {
     })
 }
 
-const putProduct = (req = request, res = response) => {
+const putProduct = async(req = request, res = response) => {
+
+    const { uid } = req.params;
+
+    const productById = await Product.findById(uid);
+    
+    if(!productById){
+        return res.status(404).end();
+    }
+
+    const { ...payload } = req.body;
+
+    const productByName = await Product.findOne({ name: payload.name });
+    
+    if(productByName && !(productById._id.equals(productByName._id))){
+        console.log('paso if')
+        return res.status(400).json({
+            errors: [
+                {
+                    errorCode: 'xxxx',
+                    description: `Product ${payload.name} already exists`
+                }
+            ]
+        });
+    }
+
+    const userUpdated = await Product.findByIdAndUpdate(uid, payload, { new: true});
+
     res.json({
-        ok: true
+        data: {
+            ...userUpdated.toJSON()
+        }
     })
 }
 
