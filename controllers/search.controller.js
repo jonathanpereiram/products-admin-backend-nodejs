@@ -2,6 +2,8 @@ const { request, response } = require("express");
 const { ObjectId } = require('mongoose').Types;
 
 const User = require('../models/user.model');
+const Product = require('../models/product.model');
+const Category = require('../models/category.model');
 
 const allowedCollections = [
     'users',
@@ -9,6 +11,33 @@ const allowedCollections = [
     'products',
     'roles'
 ]
+
+const search = (req = request, res = response) => {
+
+    const { collection, term } = req.params;
+
+    if (!allowedCollections.includes(collection)) {
+        return res.status(400).json({
+            msg: `Allowed collections are ${allowedCollections}`
+        })
+    }
+
+    switch (collection) {
+        case 'users':
+            searchUsers(term, res);
+            break;
+        case 'categories':
+            searchCategories(term, res);
+            break;
+        case 'products':
+            searchProducts(term, res);
+            break;
+        default:
+            res.status(500).json({
+                msg: 'Se me olvido hacer esta busqueda'
+            });
+    }
+}
 
 const searchUsers = async(term = '', res = response) => {
     const isMongoId = ObjectId.isValid(term);
@@ -32,32 +61,42 @@ const searchUsers = async(term = '', res = response) => {
     })
 }
 
-const search = (req = request, res = response) => {
+const searchProducts = async(term = '', res = response) => {
+    const isMongoId = ObjectId.isValid(term);
 
-    const { collection, term } = req.params;
-
-    if (!allowedCollections.includes(collection)) {
-        return res.status(400).json({
-            msg: `Allowed collections are ${allowedCollections}`
+    if(isMongoId){
+        const product = await Product.findById(term);
+        return res.json({
+            result: (product) ? [ product ] : []
         })
     }
 
-    switch (collection) {
-        case 'users':
-            searchUsers(term, res)
-            break;
-        case 'categories':
+    const regex = new RegExp(term, 'i');
 
-            break;
-        case 'products':
+    const products = await Product.find({ name: regex, active: true })
 
-            break;
+    res.json({
+        result: products
+    })
+}
 
-        default:
-            res.status(500).json({
-                msg: 'Se me olvido hacer esta busqueda'
-            });
+const searchCategories = async(term = '', res = response) => {
+    const isMongoId = ObjectId.isValid(term);
+
+    if(isMongoId){
+        const category = await Category.findById(term);
+        return res.json({
+            result: (category) ? [ category ] : []
+        })
     }
+
+    const regex = new RegExp(term, 'i');
+
+    const categories = await Category.find({ name: regex, active: true })
+
+    res.json({
+        result: categories
+    })
 }
 
 module.exports = {
