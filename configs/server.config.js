@@ -10,6 +10,7 @@ class Server {
         this.usersPath = '/api/users';
         this.productsPath = '/api/products';
         this.categoriesPath = '/api/categories';
+        this.searchPath = '/api/search';
 
         this.middlewares();
         this.routers();
@@ -25,6 +26,7 @@ class Server {
         this.app.use(this.usersPath, require('../routers/user.router'));
         this.app.use(this.productsPath, require('../routers/product.router'));
         this.app.use(this.categoriesPath, require('../routers/category.router'));
+        this.app.use(this.searchPath, require('../routers/search.route'));
     }
 
     listen() {

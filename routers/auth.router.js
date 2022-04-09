@@ -1,11 +1,10 @@
-const express = require('express');
+const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { login, register, getUser } = require('../controllers/auth.controller');
-const { inputValidator } = require('../middlewares/input-validator');
-const { validateJWT } = require('../middlewares/validate-jwt');
+const { inputValidator, validateJWT } = require('../middlewares');
 
-const router = express.Router();
+const router = Router();
 
 router.post('/login', [
     check('email', 'The email is required').not().isEmpty(),

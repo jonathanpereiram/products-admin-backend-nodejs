@@ -1,10 +1,10 @@
-const express = require('express');
+const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { getProducts, getProductById, postProduct, deleteProduct, putProduct } = require('../controllers/product.controller');
-const { inputValidator } = require('../middlewares/input-validator');
+const { inputValidator } = require('../middlewares');
 
-const router = express.Router();
+const router = Router();
 
 router.get('/', getProducts);
 

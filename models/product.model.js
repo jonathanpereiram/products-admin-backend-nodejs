@@ -1,4 +1,3 @@
-const { default: mongoose } = require('mongoose');
 const { Schema, model } = require('mongoose');
 
 const productSchema = new Schema({
@@ -20,7 +19,7 @@ const productSchema = new Schema({
         default: true
     },
     category: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Categorie'
     }
 });
